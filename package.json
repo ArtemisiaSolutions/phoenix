@@ -1,0 +1,19 @@
+{
+    "name": "modeln-config-engine",
+    "description": "Modeln Configurator Engine Service",
+    "version": "1.0.0",
+    "private": true,
+    "engines": {
+        "node": "0.8.x",
+        "npm":  "1.1.x"
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+        "mocha": "~1.3.0",
+        "should": "~1.1.0"
+    },
+    "scripts": {
+        "test": "mocha"
+    }
+}

@@ -11,4 +11,9 @@ pids
 logs
 results
 
+node_modules
+
 npm-debug.log
+
+// (nicolas) too big to commit (673MB)
+test/data/wgrib.grib2
