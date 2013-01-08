@@ -1,13 +1,14 @@
 {
-    "name": "modeln-config-engine",
-    "description": "Modeln Configurator Engine Service",
-    "version": "1.0.0",
+    "name": "phoenix",
+    "description": "Grib2 files web visualizer",
+    "version": "0.0.1",
     "private": true,
     "engines": {
         "node": "0.8.x",
         "npm":  "1.1.x"
     },
     "dependencies": {
+        "grib2js": ""
     },
     "devDependencies": {
         "mocha": "~1.3.0",
