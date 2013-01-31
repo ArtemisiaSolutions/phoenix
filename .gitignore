@@ -15,5 +15,7 @@ node_modules
 
 npm-debug.log
 
+.idea
+
 // (nicolas) too big to commit (673MB)
 test/data/wgrib.grib2
