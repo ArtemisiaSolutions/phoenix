@@ -1,8 +1,49 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+* {
+	margin : 0;
+	padding : 0;
 }
 
-a {
-  color: #00B7FF;
+
+body {
+ 	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+
+h1 {
+	color: #ecc423;
+	display: inline-block;
+}
+
+#frame {
+	max-width: 800px;
+	margin: auto;
+}
+
+#header {
+	background: #252525;
+	color: #fff;
+	padding : 1%;
+}
+
+	#header menu {
+		display: inline-block;
+		margin-left: 1%;
+	}
+
+#map {
+	background: #c0c0c0;
+}
+
+#grib_infos {
+	display: inline-block;
+	margin-left: 1%;
+}
+
+#slider {
+	background: #fff;
+	height: 10px;
+	display: inline-block;
+	min-width: 200px;
+	margin-left: 2%;
+}
+
+
