@@ -1,4 +1,5 @@
 var express = require('express')
+    require("express-namespace")
   , routes = require('./routes')
   , http = require('http')
   , path = require('path')
