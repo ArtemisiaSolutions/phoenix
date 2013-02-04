@@ -2,13 +2,19 @@ var baseUrl = "";
 
 function getData(map, control, type, date, altitude)
 {
+	var bounds = map.getBounds()
+	var point1 = {lat:bounds._southWest.lat, lon:bounds._southWest.lng}
+	var point2 = {lat:bounds._northEast.lat, lon:bounds._northEast.lng}
+	bounds = {sw: point1, ne:point2}
+	console.log(JSON.stringify(bounds))
 	$.ajax({
 		type: "GET",
 		url: baseUrl+"data/temperature/toto/tata",
 		dataType: "json",
+		data: {bounds: bounds},
 		success: function(res) {
 			/* Verifier contenu */
-			console.log(JSON.stringify(res))
+			//console.log(JSON.stringify(res))
 
 			/* Test ajout d'un layer */
 			var heatmapLayer3 = L.TileLayer.heatMap({
