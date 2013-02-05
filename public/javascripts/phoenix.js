@@ -7,11 +7,12 @@ function getData(map, control, type, date, altitude)
     var point2 = {lat: parseFloat(bounds._northEast.lat), lon: parseFloat(bounds._southWest.lng)}
 	var point3 = {lat: parseFloat(bounds._southWest.lat), lon: parseFloat(bounds._southWest.lng)}
 	var point4 = {lat: parseFloat(bounds._southWest.lat), lon: parseFloat(bounds._northEast.lng)}
+
 	bounds = [point1, point2, point3, point4]
-	console.log(JSON.stringify(bounds))
+	
 	$.ajax({
 		type: "GET",
-		url: baseUrl+"data/temperature/toto/tata",
+		url: baseUrl+"data/"+temperature+"/"+date+"/"+altitude,
 		dataType: "json",
 		data: {bounds: bounds},
 		success: function(res) {
@@ -19,7 +20,7 @@ function getData(map, control, type, date, altitude)
 			//console.log(JSON.stringify(res))
 
 			/* Test ajout d'un layer */
-			var heatmapLayer3 = L.TileLayer.heatMap({
+			var heatmapLayer = L.TileLayer.heatMap({
 				radius: 7,
 				opacity: 0.8,
 				gradient: {
@@ -31,10 +32,10 @@ function getData(map, control, type, date, altitude)
 				}
 			})
 			var data = res
-			heatmapLayer3.addData(data)
-			control.addOverlay(heatmapLayer3, "heatmapPlayer3")
+			heatmapLayer.addData(data)
+			control.addOverlay(heatmapLayer, "heatmapPlayer")
 
-			map.addLayer(heatmapLayer3)
+			map.addLayer(heatmapLayer)
 		}
 	});
 }
