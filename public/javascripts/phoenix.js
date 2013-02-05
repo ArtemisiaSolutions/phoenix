@@ -3,9 +3,11 @@ var baseUrl = "";
 function getData(map, control, type, date, altitude)
 {
 	var bounds = map.getBounds()
-	var point1 = {lat:bounds._southWest.lat, lon:bounds._southWest.lng}
-	var point2 = {lat:bounds._northEast.lat, lon:bounds._northEast.lng}
-	bounds = {sw: point1, ne:point2}
+    var point1 = {lat: parseFloat(bounds._northEast.lat), lon: parseFloat(bounds._northEast.lng)}
+    var point2 = {lat: parseFloat(bounds._northEast.lat), lon: parseFloat(bounds._southWest.lng)}
+	var point3 = {lat: parseFloat(bounds._southWest.lat), lon: parseFloat(bounds._southWest.lng)}
+	var point4 = {lat: parseFloat(bounds._southWest.lat), lon: parseFloat(bounds._northEast.lng)}
+	bounds = [point1, point2, point3, point4]
 	console.log(JSON.stringify(bounds))
 	$.ajax({
 		type: "GET",
