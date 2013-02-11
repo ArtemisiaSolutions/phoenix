@@ -37,6 +37,8 @@ $(function() {
 	
 	$("#frame").css({'height' : $(window).height()})
 	$("#map").css({'height' : $(window).height() - $("#header").outerHeight()})
+	
+
 
 	/* Map */
 
@@ -60,6 +62,8 @@ $(function() {
 	$("#wind").click(function() {
 		getData(map, control, "wind", "null", "null")
 	})
+	
+	$("#slider").slider()
 	
 
 });
