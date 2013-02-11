@@ -7,35 +7,27 @@ function getData(map, control, type, date, altitude)
     var point2 = {lat: parseFloat(bounds._northEast.lat), lon: parseFloat(bounds._southWest.lng)}
 	var point3 = {lat: parseFloat(bounds._southWest.lat), lon: parseFloat(bounds._southWest.lng)}
 	var point4 = {lat: parseFloat(bounds._southWest.lat), lon: parseFloat(bounds._northEast.lng)}
+
 	bounds = [point1, point2, point3, point4]
-	console.log(JSON.stringify(bounds))
+	
 	$.ajax({
 		type: "GET",
-		url: baseUrl+"data/temperature/toto/tata",
+		url: baseUrl+"data/"+temperature+"/"+date+"/"+altitude,
 		dataType: "json",
 		data: {bounds: bounds},
 		success: function(res) {
 			/* Verifier contenu */
-			//console.log(JSON.stringify(res))
 
 			/* Test ajout d'un layer */
-			var heatmapLayer3 = L.TileLayer.heatMap({
-				radius: 5,
-				opacity: 0.9,
-				gradient: {
-					0.0: "rgb(0,0,255)",
-					0.35: "rgb(0,255,255)",
-					0.5: "rgb(0,255,0)",
-					0.6: "yellow",
-					1.0: "rgb(255,0,0)"
-				}
+			var heatmapLayer = L.TileLayer.heatMap({
+				radius: 7,
+				opacity: 0.7,
 			})
 			var data = res
-			heatmapLayer3.addData(data)
-			control.addOverlay(heatmapLayer3, "heatmapPlayer3")
-
-
-			map.addLayer(heatmapLayer3)
+			heatmapLayer.addData(data)
+			control.addOverlay(heatmapLayer, "heatmapLayer")
+			map.addLayer(heatmapLayer)
+					console.log(date)
 		}
 	})
 }
@@ -46,6 +38,8 @@ $(function() {
 	
 	$("#frame").css({'height' : $(window).height()})
 	$("#map").css({'height' : $(window).height() - $("#header").outerHeight()})
+	
+
 
 	/* Map */
 
@@ -58,6 +52,13 @@ $(function() {
 	})
 
 	var control = L.control.layers()
+	var date = new Date()
+	date.setMinutes(0)
+	date.setSeconds(0)
+	var dateMin = new Date(date)
+	dateMin.setHours(0)
+	var dateMax = new Date(date)
+	dateMax.setHours(23)
 	control.addTo(map)
 
     var canvasTiles = L.tileLayer.canvas()
@@ -139,11 +140,26 @@ $(function() {
 	/* Listeners */
 
 	$("#temperature").click(function() {
-		getData(map, control, "temperature", "null", "null")
+		getData(map, control, "temperature", date, "null")
 	})
 
 	$("#wind").click(function() {
-		getData(map, control, "wind", "null", "null")
+		getData(map, control, "wind", date, "null")
 	})
+	
+	$("#slider").slider({
+      value: date.valueOf(),
+      min: dateMin.valueOf() + 3600000,
+      max: dateMax.valueOf() + 3600000,
+      step:3600000,
+      slide: function(event, ui) {
+		date = new Date(ui.value)
+        $("#date").html((new Date(ui.value)).toUTCString())
+      }
+    })
+    $("#date").html(new Date($("#slider").slider("value")).toUTCString())
+	console.log(date)
+	console.log(dateMin)
+	console.log(dateMax)
 
 });

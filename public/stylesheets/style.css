@@ -38,6 +38,11 @@ h1 {
 	margin-left: 1%;
 }
 
+#date {
+	display: inline-block;
+	margin-left: 1%;
+}
+
 #slider {
 	background: #fff;
 	height: 10px;
