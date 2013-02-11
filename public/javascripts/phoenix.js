@@ -27,6 +27,7 @@ function getData(map, control, type, date, altitude)
 			heatmapLayer.addData(data)
 			control.addOverlay(heatmapLayer, "heatmapLayer")
 			map.addLayer(heatmapLayer)
+					console.log(date)
 		}
 	});
 }
@@ -51,19 +52,38 @@ $(function() {
 	})
 
 	var control = L.control.layers()
+	var date = new Date()
+	date.setMinutes(0)
+	date.setSeconds(0)
+	var dateMin = new Date(date)
+	dateMin.setHours(0)
+	var dateMax = new Date(date)
+	dateMax.setHours(23)
 	control.addTo(map)
 	
 	/* Listeners */
 
 	$("#temperature").click(function() {
-		getData(map, control, "temperature", "null", "null")
+		getData(map, control, "temperature", date, "null")
 	})
 
 	$("#wind").click(function() {
-		getData(map, control, "wind", "null", "null")
+		getData(map, control, "wind", date, "null")
 	})
 	
-	$("#slider").slider()
-	
+	$("#slider").slider({
+      value: date.valueOf(),
+      min: dateMin.valueOf() + 3600000,
+      max: dateMax.valueOf() + 3600000,
+      step:3600000,
+      slide: function(event, ui) {
+		date = new Date(ui.value)
+        $("#date").html((new Date(ui.value)).toUTCString())
+      }
+    })
+    $("#date").html(new Date($("#slider").slider("value")).toUTCString())
+	console.log(date)
+	console.log(dateMin)
+	console.log(dateMax)
 
 });
