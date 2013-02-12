@@ -1,37 +1,5 @@
 var baseUrl = "";
 
-function getData(map, control, type, date, altitude)
-{
-	var bounds = map.getBounds()
-    var point1 = {lat: parseFloat(bounds._northEast.lat), lon: parseFloat(bounds._northEast.lng)}
-    var point2 = {lat: parseFloat(bounds._northEast.lat), lon: parseFloat(bounds._southWest.lng)}
-	var point3 = {lat: parseFloat(bounds._southWest.lat), lon: parseFloat(bounds._southWest.lng)}
-	var point4 = {lat: parseFloat(bounds._southWest.lat), lon: parseFloat(bounds._northEast.lng)}
-
-	bounds = [point1, point2, point3, point4]
-	
-	$.ajax({
-		type: "GET",
-		url: baseUrl+"data/"+temperature+"/"+date+"/"+altitude,
-		dataType: "json",
-		data: {bounds: bounds},
-		success: function(res) {
-			/* Verifier contenu */
-
-			/* Test ajout d'un layer */
-			var heatmapLayer = L.TileLayer.heatMap({
-				radius: 7,
-				opacity: 0.7,
-			})
-			var data = res
-			heatmapLayer.addData(data)
-			control.addOverlay(heatmapLayer, "heatmapLayer")
-			map.addLayer(heatmapLayer)
-					console.log(date)
-		}
-	})
-}
-
 $(function() {
 
 	/* Fit screen height */
@@ -39,7 +7,6 @@ $(function() {
 	$("#frame").css({'height' : $(window).height()})
 	$("#map").css({'height' : $(window).height() - $("#header").outerHeight()})
 	
-
 
 	/* Map */
 
@@ -79,12 +46,15 @@ $(function() {
         var point4 = {lat: parseFloat(bounds._southWest.lat), lon: parseFloat(bounds._northEast.lng)}
         bounds = [point1, point2, point3, point4]
 
+		var type = $("#map").attr("data-type")
+
         $.ajax({
             type: "GET",
-            url: baseUrl+"data/temperature/toto/tata",
+            url: baseUrl+"data/"+type+"/toto/tata",
             dataType: "json",
             data: {bounds: bounds},
             success: function(res) {
+				
                 res.forEach(function(point) {
                     var p = map.project(new L.LatLng(point.lat, point.lon))
                     var x = Math.round(p.x - start.x)
@@ -99,13 +69,27 @@ $(function() {
                     grd.addColorStop(1, "#004CB3")
                     context.fillStyle = grd
                     */
-                    if(point.value < 0) {
+					
+					/* Snow */
+                    
+					if(point.value <= 0) {						
+                        context.fillStyle = "rgba(192, 232, 243, 0.0)"
+                    } else if (point.value < 5) {
+                        context.fillStyle = "rgba(192, 232, 243, 0.1)"
+                    } else {
+                        context.fillStyle = "rgba(192, 232, 243, 0.5)"
+                    }
+
+					/* Temperature */
+					/*
+					if(point.value < 0) {
                         context.fillStyle = "rgba(15, 173, 236, 0.1)"
                     } else if (point.value < 5) {
                         context.fillStyle = "rgba(235, 125, 25, 0.1)"
                     } else {
                         context.fillStyle = "rgba(236, 12, 0, 0.1)"
                     }
+					*/
                     context.fill()
 
                 })
@@ -140,11 +124,24 @@ $(function() {
 	/* Listeners */
 
 	$("#temperature").click(function() {
-		getData(map, control, "temperature", date, "null")
+		if($("#map").attr("data-type") != "temperature") {
+			$("#map").attr("data-type", "temperature")
+			canvasTiles.redraw()
+		}	
 	})
 
 	$("#wind").click(function() {
-		getData(map, control, "wind", date, "null")
+		if($("#map").attr("data-type") != "wind") {
+			$("#map").attr("data-type", "wind")
+			canvasTiles.redraw()	
+		}	
+	})
+
+	$("#snow").click(function() {
+		if($("#map").attr("data-type") != "snow") {
+			$("#map").attr("data-type", "snow")
+			canvasTiles.redraw()
+		}
 	})
 	
 	$("#slider").slider({
