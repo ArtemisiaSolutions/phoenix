@@ -12,7 +12,7 @@ function getData(map, control, type, date, altitude)
 	
 	$.ajax({
 		type: "GET",
-		url: baseUrl+"data/"+temperature+"/"+date+"/"+altitude,
+		url: baseUrl+"data/"+type+"/"+date+"/"+altitude,
 		dataType: "json",
 		data: {bounds: bounds},
 		success: function(res) {
@@ -27,7 +27,6 @@ function getData(map, control, type, date, altitude)
 			heatmapLayer.addData(data)
 			control.addOverlay(heatmapLayer, "heatmapLayer")
 			map.addLayer(heatmapLayer)
-					console.log(date)
 		}
 	});
 }
@@ -62,14 +61,6 @@ $(function() {
 	control.addTo(map)
 	
 	/* Listeners */
-
-	$("#temperature").click(function() {
-		getData(map, control, "temperature", date, "null")
-	})
-
-	$("#wind").click(function() {
-		getData(map, control, "wind", date, "null")
-	})
 	
 	$("#slider").slider({
       value: date.valueOf(),
@@ -77,13 +68,18 @@ $(function() {
       max: dateMax.valueOf() + 3600000,
       step:3600000,
       slide: function(event, ui) {
-		date = new Date(ui.value)
         $("#date").html((new Date(ui.value)).toUTCString())
+        console.log($("#date").html())
+        console.log(date.toUTCString())
       }
     })
     $("#date").html(new Date($("#slider").slider("value")).toUTCString())
-	console.log(date)
-	console.log(dateMin)
-	console.log(dateMax)
+	$("#temperature").click(function() {
+		getData(map, control, "temperature",$("#date").html() , "null")
+	})
+
+	$("#wind").click(function() {
+		getData(map, control, "wind", date, "null")
+	})
 
 });
