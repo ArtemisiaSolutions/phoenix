@@ -245,7 +245,7 @@ $(function() {
     $("#date").html(new Date($("#slider").slider("value")).toUTCString())
 	
 	$("#temperature").click(function() {
-		getTempData(map, control, "temperature",$("#date").html() , "null")
+		getTempData(map, control, "temperature",$("#date").html() , "surface")
 	})
 
 	$("#wind").click(function() {
