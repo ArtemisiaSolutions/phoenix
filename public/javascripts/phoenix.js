@@ -240,8 +240,6 @@ $(function() {
       step:3600000,
       slide: function(event, ui) {
         $("#date").html((new Date(ui.value)).toUTCString())
-        console.log($("#date").html())
-        console.log(date.toUTCString())
       }
     })
     $("#date").html(new Date($("#slider").slider("value")).toUTCString())
