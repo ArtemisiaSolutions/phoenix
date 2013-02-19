@@ -7,9 +7,9 @@ function getAngle(x, y)
 	return x < 0 ? Math.atan2(x, y) + 2*Math.PI : Math.atan2(x,y)
 }
 
-function getWindData(map, control, type, date, altitude)
+function getWindData(map, control, date, altitude)
 {
-
+/*
 	var bounds = map.getBounds()
     var point1 = {lat: parseFloat(bounds._northEast.lat), lon: parseFloat(bounds._northEast.lng)}
     var point2 = {lat: parseFloat(bounds._northEast.lat), lon: parseFloat(bounds._southWest.lng)}
@@ -20,7 +20,7 @@ function getWindData(map, control, type, date, altitude)
 
 	$.ajax({
 		type: "GET",
-		url: baseUrl+"data/"+type+"/"+date+"/"+altitude,
+		url: baseUrl+"data/wind/"+date+"/"+altitude,
 		data : "json",
 		data: {bounds: bounds},
 		success: function(res) {
@@ -46,16 +46,15 @@ function getWindData(map, control, type, date, altitude)
 				}
 		}
 	})
-
-	/*
- 	var canvasTiles = L.tileLayer.canvas()
+*/
+	var canvasTiles = L.tileLayer.canvas()
 
     canvasTiles.drawTile = function(canvas, tilePoint, zoom) {
 
         var context = canvas.getContext('2d')
         var bounds = {}
         //should be computed depending on the zoom
-        var radius = 4
+        var radius = 3
         var tileSize = this.options.tileSize
         var start = tilePoint.multiplyBy(tileSize)
 
@@ -70,10 +69,11 @@ function getWindData(map, control, type, date, altitude)
 
         $.ajax({
             type: "GET",
-            url: baseUrl+"data/"+type+"/"+date+"/"+altitude,
+            url: baseUrl+"data/wind/"+date+"/"+altitude,
             dataType: "json",
             data: {bounds: bounds},
             success: function(res) {
+				
 				for(var lon in res)
 				{
 					for(var lat in res[lon])
@@ -84,44 +84,30 @@ function getWindData(map, control, type, date, altitude)
 						var vit = Math.sqrt(u*u+v*v)
 						var cap = 360 * getAngle(u, v) / (2 * Math.PI)
 						//console.log(vit+" "+cap)
-	
-						var lon2 = lon + 5 * Math.sin(cap)
-						var lat2 = lat + 5 * Math.cos(cap)
+						if(vit > 0)
+						{
+				            var p = map.project(new L.LatLng(lat, lon))
+				            var x = Math.round(p.x - start.x)
+				            var y = Math.round(p.y - start.y)
+				            context.beginPath()
 
-						context.beginPath()
-						context.moveTo(lon,lat)
-						context.lineTo(lon2,lat2)
-		          	    context.stroke()	
-									
+							radius = vit/5
+				            context.arc(x, y, radius, 0, 2 * Math.PI, false)
+						
+							var op = 0.5
+
+				            context.fillStyle = 'rgba(255,255,255,'+op+')'
+				            context.fill()
+						}
 					}
 				}
-				
-				/*
-                res.forEach(function(point) {
-					if(point.value >= 0.0)
-					{
-		                var p = map.project(new L.LatLng(point.lat, point.lon))
-		                var x = Math.round(p.x - start.x)
-		                var y = Math.round(p.y - start.y)
-
-		                context.beginPath()
-						context.moveTo(x,x)
-						context.lineTo(x+5,x+5)
-						context.fill()
-
-		                context.fillStyle = 'rgba(255,255,255,'+op+')'
-		                context.fill()
-					}
-                })
-				*
             }
         })
     }
     map.addLayer(canvasTiles)
-	*/
 }
 
-function getSnowData(map, control, type, date, altitude)
+function getSnowData(map, control, date, altitude)
 {
  	var canvasTiles = L.tileLayer.canvas()
 
@@ -130,7 +116,7 @@ function getSnowData(map, control, type, date, altitude)
         var context = canvas.getContext('2d')
         var bounds = {}
         //should be computed depending on the zoom
-        var radius = 4
+        var radius = 5
         var tileSize = this.options.tileSize
         var start = tilePoint.multiplyBy(tileSize)
 
@@ -151,7 +137,7 @@ function getSnowData(map, control, type, date, altitude)
             success: function(res) {
 
                 res.forEach(function(point) {
-					if(point.value >= 0.2)
+					if(point.value > 0)
 					{
 		                var p = map.project(new L.LatLng(point.lat, point.lon))
 		                var x = Math.round(p.x - start.x)
@@ -159,7 +145,7 @@ function getSnowData(map, control, type, date, altitude)
 		                context.beginPath()
 		                context.arc(x, y, radius, 0, 2 * Math.PI, false)
 						
-						var op = 0.5*point.value
+						var op = point.value * 2
 
 		                context.fillStyle = 'rgba(255,255,255,'+op+')'
 		                context.fill()
@@ -185,7 +171,7 @@ function getTempData(map, control, date, altitude)
 	$.ajax({
 		type: "GET",
 		url: baseUrl+"data/temperature/"+date+"/"+altitude,
-		data : "json",
+		dataType: "json",
 		data: {bounds: bounds},
 		success: function(res) {
 
@@ -209,7 +195,6 @@ $(function() {
 	$("#frame").css({'height' : $(window).height()})
 	$("#map").css({'height' : $(window).height() - $("#header").outerHeight()})
 	
-
 
 	/* Map */
 
@@ -249,7 +234,7 @@ $(function() {
 	})
 
 	$("#wind").click(function() {
-		getWindData(map, control, $("#date").html(), "15 mb")
+		getWindData(map, control, $("#date").html(), "10 mb")
 	})
 
 	$("#snow").click(function() {
