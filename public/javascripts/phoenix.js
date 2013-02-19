@@ -171,6 +171,16 @@ function getSnowData(map, control, type, date, altitude)
     map.addLayer(canvasTiles)
 }
 
+function getColor(d) {
+	var color = ""
+	if (d <= -10) color = 'rgb(0, 0, 255)'
+	else if (d > -10 && d <= 0) color = 'rgb(0, 255, 255)'
+	else if (d > 0 && d <= 10) color = 'rgb(0, 255, 0)'
+	else if (d > 10 && d <= 20) color = 'yellow'
+	else if (d > 20 && d <= 30) color = 'rgb(255, 0, 0)'
+    return color
+}
+
 
 function getTempData(map, control, type, date, altitude)
 {
@@ -191,12 +201,34 @@ function getTempData(map, control, type, date, altitude)
 
 			var heatmapLayer = L.TileLayer.heatMap({
 				radius: 7,
-				opacity: 0.7,
+				opacity: 0.7, 
 			})
 			var data = res
 			heatmapLayer.addData(data)
 			control.addOverlay(heatmapLayer, "heatmapLayer")
 			map.addLayer(heatmapLayer)
+			
+			var legend = L.control({position: 'bottomright'})
+
+			legend.onAdd = function (map) {
+
+				var div = L.DomUtil.create('div', 'info legend'),
+					grades = [-10, 0, 10, 20, 30],
+					labels = [];
+
+				// loop through our density intervals and generate a label with a colored square for each interval
+				for (var i = 0; i < grades.length; i++) {
+					div.innerHTML +=
+						'<i style="background:' + getColor(grades[i]) + '"></i> '
+					if(i == 0) div.innerHTML += '<' + grades[i] + '<br>'
+					else if(i == grades.length - 1) div.innerHTML += '>' + grades[i]
+					if(i > 0 && i < grades.length - 1) div.innerHTML += grades[i] + '&ndash;' + grades[i + 1] + '<br>'
+				}
+
+				return div;
+			};
+
+			legend.addTo(map);
 	
 		}
 	});
@@ -218,6 +250,11 @@ $(function() {
 	var map = new L.Map('map', {
 		center: new L.LatLng(47.2738, 0.88855),
 		zoom: 6,
+		legend: 
+		{
+		    position: 'br',
+			title: 'Example Distribution'
+		},  
 		layers: [baselayer]
 	})
 
