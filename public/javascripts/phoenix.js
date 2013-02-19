@@ -145,13 +145,13 @@ function getSnowData(map, control, type, date, altitude)
 
         $.ajax({
             type: "GET",
-            url: baseUrl+"data/"+type+"/"+date+"/"+altitude,
+            url: baseUrl+"data/snow/"+date+"/"+altitude,
             dataType: "json",
             data: {bounds: bounds},
             success: function(res) {
 
                 res.forEach(function(point) {
-					if(point.value >= 0.0)
+					if(point.value >= 0.2)
 					{
 		                var p = map.project(new L.LatLng(point.lat, point.lon))
 		                var x = Math.round(p.x - start.x)
@@ -172,7 +172,7 @@ function getSnowData(map, control, type, date, altitude)
 }
 
 
-function getTempData(map, control, type, date, altitude)
+function getTempData(map, control, date, altitude)
 {
 	var bounds = map.getBounds()
     var point1 = {lat: parseFloat(bounds._northEast.lat), lon: parseFloat(bounds._northEast.lng)}
@@ -184,7 +184,7 @@ function getTempData(map, control, type, date, altitude)
 
 	$.ajax({
 		type: "GET",
-		url: baseUrl+"data/"+type+"/"+date+"/"+altitude,
+		url: baseUrl+"data/temperature/"+date+"/"+altitude,
 		data : "json",
 		data: {bounds: bounds},
 		success: function(res) {
@@ -193,8 +193,8 @@ function getTempData(map, control, type, date, altitude)
 				radius: 7,
 				opacity: 0.7,
 			})
-			var data = res
-			heatmapLayer.addData(data)
+		
+			heatmapLayer.addData(res)
 			control.addOverlay(heatmapLayer, "heatmapLayer")
 			map.addLayer(heatmapLayer)
 	
@@ -245,15 +245,15 @@ $(function() {
     $("#date").html(new Date($("#slider").slider("value")).toUTCString())
 	
 	$("#temperature").click(function() {
-		getTempData(map, control, "temperature",$("#date").html() , "surface")
+		getTempData(map, control,$("#date").html() , "surface")
 	})
 
 	$("#wind").click(function() {
-		getWindData(map, control, "wind", $("#date").html(), "null")
+		getWindData(map, control, $("#date").html(), "15 mb")
 	})
 
 	$("#snow").click(function() {
-		getSnowData(map, control, "snow", $("#date").html(), "null")
+		getSnowData(map, control, $("#date").html(), "surface")
 	})
 
 });
