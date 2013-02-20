@@ -7,6 +7,28 @@ function getAngle(x, y)
 	return x < 0 ? Math.atan2(x, y) + 2*Math.PI : Math.atan2(x,y)
 }
 
+function clearMap(dataType)
+{
+	switch(dataType)
+	{
+		case "temperature" :
+			$(".leaflet-layer div").remove()
+			$(".leaflet-control-container .legend").remove()
+			break
+
+		case "snow" :
+			$(".leaflet-layer canvas").remove()
+			break
+
+		case "wind" :
+			$(".leaflet-layer canvas").remove()
+			break
+
+		case "clouds" :
+			break
+	}
+}
+
 function getWindData(map, control, date, altitude)
 {
 /*
@@ -189,7 +211,7 @@ function getTempData(map, control, date, altitude)
 				radius: 7,
 				opacity: 0.7
 			})
-		
+
 			heatmapLayer.addData(res)
 			control.addOverlay(heatmapLayer, "heatmapLayer")
 			map.addLayer(heatmapLayer)
@@ -267,19 +289,27 @@ $(function() {
     $("#date").html(new Date($("#slider").slider("value")).toUTCString())
 	
 	$("#temperature").click(function() {
+		clearMap($("#map").attr("data-type"))
 		getTempData(map, control,$("#date").html() , "surface")
+		$("#map").attr("data-type", "temperature")
 	})
 
 	$("#wind").click(function() {
+		clearMap($("#map").attr("data-type"))
 		getWindData(map, control, $("#date").html(), "10 mb")
+		$("#map").attr("data-type", "wind")
 	})
 
 	$("#snow").click(function() {
+		clearMap($("#map").attr("data-type"))
 		getSnowData(map, control, $("#date").html(), "surface")
+		$("#map").attr("data-type", "snow")	
 	})
 
     $("#clouds").click(function() {
-        getData(map, control, "clouds", $("#date").html(), "null")
+		clearMap($("#map").attr("data-type"))        
+		getData(map, control, $("#date").html(), "10 mb")
+		$("#map").attr("data-type", "clouds")
     })
 
 });
