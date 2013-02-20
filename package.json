@@ -10,7 +10,8 @@
     "dependencies": {
         "express": "3.1.0",
         "express-namespace" : ">=0.1.1",
-        "jade" : "" 
+        "jade" : "",
+        "grib2js": "0.0.5"
     },
     "devDependencies": {
         "mocha": "~1.3.0",
