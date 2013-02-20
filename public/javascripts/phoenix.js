@@ -16,12 +16,10 @@ function getData(map, control, type, date, altitude)
 		dataType: "json",
 		data: {bounds: bounds},
 		success: function(res) {
-			/* Verifier contenu */
-
 			/* Test ajout d'un layer */
 			var heatmapLayer = L.TileLayer.heatMap({
 				radius: 7,
-				opacity: 0.7,
+				opacity: 0.7
 			})
 			var data = res
 			heatmapLayer.addData(data)
@@ -77,7 +75,11 @@ $(function() {
 	})
 
 	$("#wind").click(function() {
-		getData(map, control, "wind", date, "null")
+		getData(map, control, "wind", $("#date").html(), "null")
 	})
+
+    $("#clouds").click(function() {
+        getData(map, control, "clouds", $("#date").html(), "null")
+    })
 
 });
