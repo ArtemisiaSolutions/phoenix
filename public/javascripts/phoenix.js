@@ -145,7 +145,7 @@ function getSnowData(map, control, date, altitude)
 		                context.beginPath()
 		                context.arc(x, y, radius, 0, 2 * Math.PI, false)
 						
-						var op = point.value * 2
+						var op = point.value * 3
 
 		                context.fillStyle = 'rgba(255,255,255,'+op+')'
 		                context.fill()
