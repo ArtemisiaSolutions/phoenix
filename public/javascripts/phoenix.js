@@ -31,44 +31,7 @@ function clearMap(dataType)
 
 function getWindData(map, control, date, altitude)
 {
-/*
-	var bounds = map.getBounds()
-    var point1 = {lat: parseFloat(bounds._northEast.lat), lon: parseFloat(bounds._northEast.lng)}
-    var point2 = {lat: parseFloat(bounds._northEast.lat), lon: parseFloat(bounds._southWest.lng)}
-	var point3 = {lat: parseFloat(bounds._southWest.lat), lon: parseFloat(bounds._southWest.lng)}
-	var point4 = {lat: parseFloat(bounds._southWest.lat), lon: parseFloat(bounds._northEast.lng)}
 
-	bounds = [point1, point2, point3, point4]
-
-	$.ajax({
-		type: "GET",
-		url: baseUrl+"data/wind/"+date+"/"+altitude,
-		data : "json",
-		data: {bounds: bounds},
-		success: function(res) {
-			for(var lon in res)
-				{
-					for(var lat in res[lon])
-					{
-						var u = res[lon][lat].u
-						var v = res[lon][lat].v
-	
-						var vit = Math.sqrt(u*u+v*v)
-						var cap = 360 * getAngle(u, v) / (2 * Math.PI)
-	
-						var lon2 = lon + 20 * Math.sin(cap)
-						var lat2 = lat + 20 * Math.cos(cap)
-						
-						console.log(lon2+" "+lat2+" "+lon+" "+lat)
-						var l1 = new L.LatLng(lat, lon)
-						var l2 = new L.LatLng(lat2, lon2)
-						var polyline = L.polygon([l1,l2], {color: 'red'}).addTo(map);
-									
-					}
-				}
-		}
-	})
-*/
 	var canvasTiles = L.tileLayer.canvas()
 
     canvasTiles.drawTile = function(canvas, tilePoint, zoom) {
@@ -95,32 +58,50 @@ function getWindData(map, control, date, altitude)
             dataType: "json",
             data: {bounds: bounds},
             success: function(res) {
-				
+				var cpt = 0
 				for(var lon in res)
 				{
 					for(var lat in res[lon])
 					{
-						var u = res[lon][lat].u
-						var v = res[lon][lat].v
-	
-						var vit = Math.sqrt(u*u+v*v)
-						var cap = 360 * getAngle(u, v) / (2 * Math.PI)
-						//console.log(vit+" "+cap)
-						if(vit > 0)
+						if(cpt == 2)
 						{
-				            var p = map.project(new L.LatLng(lat, lon))
-				            var x = Math.round(p.x - start.x)
-				            var y = Math.round(p.y - start.y)
-				            context.beginPath()
-
-							radius = vit/5
-				            context.arc(x, y, radius, 0, 2 * Math.PI, false)
+							var u = res[lon][lat].u
+							var v = res[lon][lat].v
+							//var p = map.project(new L.LatLng(lat, lon))
+							var p = map.project(new L.LatLng(lat, lon))
+							var x = p.x - start.x
+							var y = p.y - start.y
+							
+							context.beginPath();
+							context.moveTo(x,y);
+							context.lineTo(x+u,y+v);
+							context.stroke();
+					
 						
-							var op = 0.5
+							//console.log("("+p.x+","+p.y+") ("+u+","+v+")")
+							/*
+							var vit = Math.sqrt(u*u+v*v)
+							var cap = 360 * getAngle(u, v) / (2 * Math.PI)
+							console.log(vit+" "+cap)
+							if(vit > 0)
+							{
+						        var p = map.project(new L.LatLng(lat, lon))
+						        var x = Math.round(p.x - start.x)
+						        var y = Math.round(p.y - start.y)
+						        context.beginPath()
 
-				            context.fillStyle = 'rgba(255,255,255,'+op+')'
-				            context.fill()
+								radius = vit/5
+						        context.arc(x, y, radius, 0, 2 * Math.PI, false)
+						
+								var op = 0.5
+
+						        context.fillStyle = 'rgba(255,255,255,'+op+')'
+						        context.fill()
+							}
+							*/
+							cpt = 0
 						}
+						cpt++
 					}
 				}
             }
@@ -162,6 +143,7 @@ function getSnowData(map, control, date, altitude)
 					if(point.value > 0)
 					{
 		                var p = map.project(new L.LatLng(point.lat, point.lon))
+						console.log(p.x+" "+p.y)
 		                var x = Math.round(p.x - start.x)
 		                var y = Math.round(p.y - start.y)
 		                context.beginPath()
